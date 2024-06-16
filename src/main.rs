@@ -1,10 +1,9 @@
-use std::{thread::sleep, time::Duration};
+use std::time::Duration;
 
 use rand::{thread_rng, Rng};
+use tokio::signal;
 
-fn main() {
-  tracing_subscriber::fmt::init();
-
+async fn app() {
   let mut rng = thread_rng();
 
   loop {
@@ -16,7 +15,21 @@ fn main() {
       2 => tracing::error!("this is an ERROR log 🚨"),
       _ => unreachable!(),
     }
-		
-    sleep(Duration::from_secs(5));
+
+    tokio::time::sleep(Duration::from_secs(5)).await;
   }
+}
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+  tracing_subscriber::fmt::init();
+
+  let mut term_handle = signal::unix::signal(signal::unix::SignalKind::terminate())?;
+
+  tokio::select! {
+    _ = app() => {},
+    _ = term_handle.recv() => {}
+  }
+
+  Ok(())
 }
