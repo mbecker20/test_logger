@@ -3,7 +3,9 @@ WORKDIR /builder
 
 COPY . .
 
-RUN cargo build --release
+RUN --mount=type=secret,id=SECRET_LOG \
+	SECRET_LOG=$(cat /run/secrets/SECRET_LOG) && \
+	cargo build --release
 
 FROM gcr.io/distroless/cc
 
