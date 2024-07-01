@@ -1,11 +1,13 @@
-FROM rust:1.77.1-bullseye as builder
+FROM rust:1.79.0-bullseye AS builder
 WORKDIR /builder
 
 COPY . .
 
 RUN --mount=type=secret,id=SECRET_LOG \
 	SECRET_LOG=$(cat /run/secrets/SECRET_LOG) && \
-	cargo build --release
+	echo $SECRET_LOG
+
+RUN cargo build --release
 
 FROM gcr.io/distroless/cc
 

@@ -6,8 +6,6 @@ use tokio::signal;
 async fn app() {
   let mut rng = thread_rng();
 
-  tracing::info!("compile time secret log: {}", env!("SECRET_LOG"));
-
   loop {
     let num = rng.gen_range(0..3);
 
