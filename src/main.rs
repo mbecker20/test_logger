@@ -1,13 +1,16 @@
 use std::time::Duration;
 
-use rand::{thread_rng, Rng};
+use rand::Rng;
 use tokio::signal;
+use tracing::info;
 
 async fn app() {
-  let mut rng = thread_rng();
+  info!("version: v{}", env!("CARGO_PKG_VERSION"));
+
+  let mut rng = rand::rng();
 
   loop {
-    let num = rng.gen_range(0..3);
+    let num = rng.random_range(0..3);
 
     match num {
       0 => tracing::info!("this is an INFO log ✅"),
